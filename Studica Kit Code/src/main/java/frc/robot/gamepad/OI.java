@@ -1,172 +1,85 @@
 package frc.robot.gamepad;
 
-//Import the joystick class
 import edu.wpi.first.wpilibj.Joystick;
+import frc.robot.Constants;
 
-public class OI
-{
-    //Create the joystick
-    Joystick drivePad;
+public class OI {
+    
+    private Joystick drivePad;
 
-    public OI()
-    {
-        //initialize the joystick 
+    public OI() {
         drivePad = new Joystick(GamepadConstants.USB_PORT);
     }
 
-    /**
-     * Drive Controller
-     */
+    private double applyDeadzone(double value, double deadzone) {
+        return (Math.abs(value) < deadzone) ? 0.0 : value;
+    }
 
-        /**
-         * @return the y-axis value from the drivePad right joystick
-         */
-        public double getRightDriveY()
-        {
-            double joy = drivePad.getRawAxis(GamepadConstants.RIGHT_ANALOG_Y);
-            if(Math.abs(joy) < 0.05)
-                return 0.0;
-            else  
-                return joy;
-        }
+    public double getRightDriveY() {
+        return applyDeadzone(drivePad.getRawAxis(GamepadConstants.RIGHT_ANALOG_Y), Constants.DEADZONE);
+    }
 
-        /**
-         * @return the x-axis value from the drivePad right Joystick
-         */
-        public double getRightDriveX()
-        {
-            double joy = drivePad.getRawAxis(GamepadConstants.RIGHT_ANALOG_X);
-            if(Math.abs(joy) < 0.05)
-                return 0.0;
-            else
-                return joy;
-        }
+    public double getRightDriveX() {
+        return applyDeadzone(drivePad.getRawAxis(GamepadConstants.RIGHT_ANALOG_X), Constants.DEADZONE);
+    }
 
-        /**
-         * @return the y-axis value from the drivePad left joystick
-         */
-        public double getLeftDriveY()
-        {
-            double joy = drivePad.getRawAxis(GamepadConstants.LEFT_ANALOG_Y);
-            if(Math.abs(joy) < 0.05)
-                return 0.0;
-            else  
-                return joy;
-        }
-    
-        /**
-         * @return the x-axis value from the drivePad left Joystick
-         */
-        public double getLeftDriveX()
-        {
-            double joy = drivePad.getRawAxis(GamepadConstants.LEFT_ANALOG_X);
-            if(Math.abs(joy) < 0.05)
-                return 0.0;
-            else
-                return joy;
-        }
+    public double getLeftDriveY() {
+        return applyDeadzone(drivePad.getRawAxis(GamepadConstants.LEFT_ANALOG_Y), Constants.DEADZONE);
+    }
 
-        /**
-         * @return a true or false depending on the input
-         */
-        public boolean getDriveRightTrigger()
-        {
-            return drivePad.getRawButton(GamepadConstants.RIGHT_TRIGGER);
-        }
+    public double getLeftDriveX() {
+        return applyDeadzone(drivePad.getRawAxis(GamepadConstants.LEFT_ANALOG_X), Constants.DEADZONE);
+    }
 
-        /**
-         * @return a true or false depending on the input
-         */
-        public boolean getDriveRightBumper()
-        {
-            return drivePad.getRawButton(GamepadConstants.RIGHT_BUMPER);
-        }
+    public boolean getDriveRightTrigger() {
+        return drivePad.getRawButton(GamepadConstants.RIGHT_TRIGGER);
+    }
 
-        /**
-         * @return a true or false depending on the input
-         */
-        public boolean getDriveLeftTrigger()
-        {
-            return drivePad.getRawButton(GamepadConstants.LEFT_TRIGGER);
-        }
+    public boolean getDriveRightBumper() {
+        return drivePad.getRawButton(GamepadConstants.RIGHT_BUMPER);
+    }
 
-        /**
-         * @return a true or false depending on the input
-         */
-        public boolean getDriveLeftBumper()
-        {
-            return drivePad.getRawButton(GamepadConstants.LEFT_BUMPER);
-        }
+    public boolean getDriveLeftTrigger() {
+        return drivePad.getRawButton(GamepadConstants.LEFT_TRIGGER);
+    }
 
-        /**
-         * @return a true or false depending on the input
-         */
-        public boolean getDriveXButton()
-        {
-            return drivePad.getRawButton(GamepadConstants.SHARE_BUTTON);
-        }
+    public boolean getDriveLeftBumper() {
+        return drivePad.getRawButton(GamepadConstants.LEFT_BUMPER);
+    }
 
-        /**
-         * @return a true or false depending on the input
-         */
-        public boolean getDriveYButton()
-        {
-            return drivePad.getRawButton(GamepadConstants.TRIANGLE_BUTTON);
-        }
+    public boolean getDriveXButton() {
+        return drivePad.getRawButton(GamepadConstants.SHARE_BUTTON);
+    }
 
-        /**
-         * @return a true or false depending on the input
-         */
-        public boolean getDriveBButton()
-        {
-            return drivePad.getRawButtonPressed(GamepadConstants.CIRCLE_BUTTON);
-        }
+    public boolean getDriveYButton() {
+        return drivePad.getRawButton(GamepadConstants.TRIANGLE_BUTTON);
+    }
 
-        /**
-         * @return a true or false depending on the input
-         */
-        public boolean getDriveAButton()
-        {
-            return drivePad.getRawButtonPressed(GamepadConstants.X_BUTTON);
-        }
+    public boolean getDriveBButton() {
+        return drivePad.getRawButtonPressed(GamepadConstants.CIRCLE_BUTTON);
+    }
 
-        /**
-         * @return a true or false depending on the input
-         */
-        public boolean getDriveBackButton()
-        {
-            return drivePad.getRawButton(GamepadConstants.SHARE_BUTTON);
-        }
+    public boolean getDriveAButton() {
+        return drivePad.getRawButtonPressed(GamepadConstants.X_BUTTON);
+    }
 
-        /**
-         * @return a true or false depending on the input
-         */
-        public boolean getDriveStartButton()
-        {
-            return drivePad.getRawButton(GamepadConstants.OPTIONS_BUTTON);
-        }
+    public boolean getDriveBackButton() {
+        return drivePad.getRawButton(GamepadConstants.SHARE_BUTTON);
+    }
 
-        /**
-         * @return a true or false depending on the input
-         */
-        public boolean getDriveRightAnalogButton()
-        {
-            return drivePad.getRawButton(GamepadConstants.RIGHT_ANALOG_BUTTON);
-        }
+    public boolean getDriveStartButton() {
+        return drivePad.getRawButton(GamepadConstants.OPTIONS_BUTTON);
+    }
 
-        /**
-         * @return a true or false depending on the input
-         */
-        public boolean getDriveLeftAnalogButton()
-        {
-            return drivePad.getRawButton(GamepadConstants.LEFT_ANALOG_BUTTON);
-        }
+    public boolean getDriveRightAnalogButton() {
+        return drivePad.getRawButton(GamepadConstants.RIGHT_ANALOG_BUTTON);
+    }
 
-        /**
-         * @return the numeric value of the D Pad hat. D UP is 0 and rotates CW. Ex D Right is 90, D Down is 180 
-         */
-        public int getPOV()
-        {
-            return drivePad.getPOV();
-        }
+    public boolean getDriveLeftAnalogButton() {
+        return drivePad.getRawButton(GamepadConstants.LEFT_ANALOG_BUTTON);
+    }
+
+    public int getPOV() {
+        return drivePad.getPOV();
+    }
 }

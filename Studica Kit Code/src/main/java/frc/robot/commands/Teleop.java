@@ -1,124 +1,65 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.gamepad.OI;
 import frc.robot.subsystems.DriveTrain;
 
-public class Teleop extends CommandBase
-{
-    /**
-     * Bring in Subsystem and Gamepad instances
-     */
+public class Teleop extends CommandBase {
+    
     private static final DriveTrain driveTrain = RobotContainer.driveTrain;
     private static final OI oi = RobotContainer.oi;
 
-    /**
-     * Joystick inputs
-     */
-    double inputLeftY = 0;
-    double inputLeftX = 0;
-    double inputRightY = 0;
-
-    /**
-     * Ramp Constants
-     */
-    double deltaLeftY = 0;
-    double deltaLeftX = 0;
-    double deltaRightY = 0;
-    double prevLeftY = 0;
-    double prevLeftX = 0;
-    double prevRightY = 0;
-
-    /**
-     * Ramp up Constant
-     */
-    private static final double RAMP_UP = 0.05;
-
-    /**
-     * Ramp down Constant
-     */
-    private static final double RAMP_DOWN = 0.05;
-
-    /**
-     * Delta Limit
-     */
-    private static final double DELTA_LIMIT = 0.075;
-
-    public Teleop()
-    {
+    public Teleop() {
         addRequirements(driveTrain);
     }
 
-    /**
-     * Code here will run once when the command is called for the first time
-     */
     @Override
-    public void initialize() 
-    {
+    public void initialize() {
         driveTrain.resetEncoders();
         driveTrain.resetYaw();
     }
 
-    /**
-     * Code here will run continously every robot loop until the command is stopped
-     */
     @Override
-    public void execute() 
-    {
-        /**
-         * Get Joystick data
-         */
-        inputLeftX = oi.getLeftDriveX();
-        inputLeftY = oi.getLeftDriveY();
-        inputRightY = oi.getRightDriveY();
+    public void execute() {
+        double forward = -oi.getLeftDriveY();
+        double turn = oi.getRightDriveX() * Constants.TURN_GAIN;
 
-        /**
-         * Ramp
-         */
-        deltaLeftX = inputLeftX - prevLeftX;
-        deltaLeftY = inputLeftY - prevLeftY;
-        deltaRightY = inputRightY - prevRightY;
-        if (deltaLeftX >= DELTA_LIMIT)
-            inputLeftX += RAMP_UP;
-        else if (deltaLeftX <= -DELTA_LIMIT)
-            inputLeftX -= RAMP_DOWN;
-        if (deltaLeftY >= DELTA_LIMIT)
-            inputLeftY += RAMP_UP;
-        else if (deltaLeftY <= -DELTA_LIMIT)
-            inputLeftY -= RAMP_DOWN;
-        if (deltaRightY >= DELTA_LIMIT)
-            inputRightY += RAMP_UP;
-        else if (deltaRightY <= -DELTA_LIMIT)
-            inputRightY -= RAMP_DOWN;
-        prevLeftY = inputLeftY;
-        prevLeftX = inputLeftX;
-        prevRightY = inputRightY;
+        double leftPower = forward + turn;
+        double rightPower = forward - turn;
 
-        // driveTrain.driveArcade(inputLeftX, -inputLeftY); // Use this for arcade
+        double max = Math.max(Math.abs(leftPower), Math.abs(rightPower));
+        if (max > 1.0) {
+            leftPower /= max;
+            rightPower /= max;
+        }
 
-        driveTrain.driveDifferential(-inputLeftY, -inputRightY); // Use this for differential
+        leftPower = clamp(leftPower, -Constants.MAX_POWER, Constants.MAX_POWER);
+        rightPower = clamp(rightPower, -Constants.MAX_POWER, Constants.MAX_POWER);
+
+        driveTrain.driveDifferential(leftPower, rightPower);
+
+        SmartDashboard.putNumber("Forward", forward);
+        SmartDashboard.putNumber("Turn", turn);
+        SmartDashboard.putNumber("Left", leftPower);
+        SmartDashboard.putNumber("Right", rightPower);
     }
 
-    /**
-     * When the comamnd is stopped or interrupted this code is run
-     * <p>
-     * Good place to stop motors in case of an error
-     */
+    private double clamp(double value, double min, double max) {
+        if (value < min) return min;
+        if (value > max) return max;
+        return value;
+    }
+
     @Override
-    public void end(boolean interrupted)
-    {
-        driveTrain.driveArcade(0.0, 0.0);
+    public void end(boolean interrupted) {
         driveTrain.driveDifferential(0.0, 0.0);
     }
 
-    /**
-     * Check to see if command is finished
-     */
     @Override
-    public boolean isFinished()
-    {
+    public boolean isFinished() {
         return false;
     }
-
 }
