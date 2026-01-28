@@ -1,3 +1,4 @@
+
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -71,6 +72,14 @@ public class DriveTrain extends SubsystemBase {
         return navX.getYaw();
     }
 
+    // guess.
+    private double clamp(double value, double min, double max) {
+        if (value < min) return min;
+        if (value > max) return max;
+        return value;
+    }
+
+    // simple driving, y moves forward backwards, x turns left right
     public void driveArcade(double x, double y) {
         x = clamp(x, -1.0, 1.0);
         y = clamp(y, -1.0, 1.0);
@@ -81,64 +90,24 @@ public class DriveTrain extends SubsystemBase {
         rightFront.set(y - x);
     }
 
-    public void driveDifferential(double left, double right) {
-        left = clamp(left, -1.0, 1.0);
-        right = clamp(right, -1.0, 1.0);
+
+    // gets the average distance traveled across all four wheels
+    public double getAverageEncoderDistance() {
+        return (leftBackEncoder.getEncoderDistance() + leftFrontEncoder.getEncoderDistance() + rightBackEncoder.getEncoderDistance() + rightFrontEncoder.getEncoderDistance()) / 4.0;
+    }
+
+    // keeps moving the robot forward until the encoders say they have reached the distance. power needs to be tuned!
+    public void moveForward(double distance, double power) {
+        resetEncoders();        
         
-        leftBack.set(left);
-        leftFront.set(left);
-        rightBack.set(right);
-        rightFront.set(right);
-    }
-
-    private double clamp(double value, double min, double max) {
-        if (value < min) return min;
-        if (value > max) return max;
-        return value;
-    }
-
-    public double getLeftBackEncoderDistance() {
-        return leftBackEncoder.getEncoderDistance();
-    }
-
-    public double getLeftFrontEncoderDistance() {
-        return leftFrontEncoder.getEncoderDistance();
-    }
-
-    public double getRightBackEncoderDistance() {
-        return rightBackEncoder.getEncoderDistance();
-    }
-
-    public double getRightFrontEncoderDistance() {
-        return rightFrontEncoder.getEncoderDistance();
-    }
-
-    public double getLeftBackRPM() {
-        return leftBack.getRPM();
-    }
-
-    public double getLeftFrontRPM() {
-        return leftFront.getRPM();
-    }
-
-    public double getRightBackRPM() {
-        return rightBack.getRPM();
-    }
-
-    public double getRightFrontRPM() {
-        return rightFront.getRPM();
+        while (getAverageEncoderDistance() < distance) {
+            driveArcade(0, power);
+        }
+        
+        driveArcade(0, 0); // stop the robot!!
     }
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("NavX Yaw", getYaw());
-        SmartDashboard.putNumber("LB Encoder", getLeftBackEncoderDistance());
-        SmartDashboard.putNumber("LB RPM", getLeftBackRPM());
-        SmartDashboard.putNumber("LF Encoder", getLeftFrontEncoderDistance());
-        SmartDashboard.putNumber("LF RPM", getLeftFrontRPM());
-        SmartDashboard.putNumber("RB Encoder", getRightBackEncoderDistance());
-        SmartDashboard.putNumber("RB RPM", getRightBackRPM());
-        SmartDashboard.putNumber("RF Encoder", getRightFrontEncoderDistance());
-        SmartDashboard.putNumber("RF RPM", getRightFrontRPM());
     }
 }
