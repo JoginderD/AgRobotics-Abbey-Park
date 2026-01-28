@@ -18,7 +18,9 @@ public final class Constants {
     private static final double encoderPulseRatio = pulsePerRevolution * gearRatio;
     public static final double DIST_PER_TICK = (Math.PI * 2 * wheelRadius) / encoderPulseRatio;
 
-
+    // prob change this
+    public static final int UWB_BAUD_RATE = 115200;
+    public static final int UWB_BUFFER_SIZE = 256;
 
 
 }

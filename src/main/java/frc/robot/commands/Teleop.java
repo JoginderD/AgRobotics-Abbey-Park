@@ -19,7 +19,7 @@ public class Teleop extends CommandBase {
     @Override
     public void initialize() {
         driveTrain.resetEncoders();
-        driveTrain.resetYaw();
+        driveTrain.navX.zeroYaw();
     }
 
     @Override

@@ -18,7 +18,7 @@ public class DriveTrain extends SubsystemBase {
     private TitanQuad rightBack;
     private TitanQuad rightFront;
 
-    private AHRS navX;
+    public AHRS navX;
     private TitanQuadEncoder leftBackEncoder;
     private TitanQuadEncoder leftFrontEncoder;
     private TitanQuadEncoder rightBackEncoder;
@@ -64,14 +64,6 @@ public class DriveTrain extends SubsystemBase {
         rightFrontEncoder.reset();
     }
 
-    public void resetYaw() {
-        navX.zeroYaw();
-    }
-
-    public float getYaw() {
-        return navX.getYaw();
-    }
-
     // guess.
     private double clamp(double value, double min, double max) {
         if (value < min) return min;
@@ -106,6 +98,58 @@ public class DriveTrain extends SubsystemBase {
         
         driveArcade(0, 0); // stop the robot!!
     }
+    
+    // continuously updates path to target 10 times per second
+    public void driveToUWB(UWB uwb, double targetX, double targetY, double power) {
+        long lastUpdate = System.currentTimeMillis();
+        
+        while (true) {
+            // recalculate distance
+            double deltaX = targetX - uwb.xPosition;
+            double deltaY = targetY - uwb.yPosition;
+            double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            
+            if (distance <= 100) break; // tolerance for ending the loop - make it larger and the robot will stop further
+            
+            // recalculate every 100ms (10 times per second)
+            if (System.currentTimeMillis() - lastUpdate >= 100) {
+                // oo finally interestingm ath  - calcualtes angle to target
+                double targetAngle = Math.toDegrees(Math.atan2(targetX - uwb.xPosition, targetY - uwb.yPosition));
+                double angleDiff = targetAngle - navX.getYaw();
+                while (angleDiff > 180) angleDiff -= 360;
+                while (angleDiff < -180) angleDiff += 360;
+                
+                // adjusting da heading while driving
+                double turnAmount = Math.signum(angleDiff) * Math.min(Math.abs(angleDiff) / 90.0, 1.0);
+                driveArcade(turnAmount * Constants.TURN_GAIN, power);
+                
+                lastUpdate = System.currentTimeMillis();
+            }
+        }
+        
+        driveArcade(0, 0);
+    }
+
+
+    // rotates robot to target angle
+    public void turnToAngle(double targetAngle, double power) {
+        double currentAngle = navX.getYaw();
+        double angleDiff = targetAngle - currentAngle;
+        while (angleDiff > 180) angleDiff -= 360;
+        while (angleDiff < -180) angleDiff += 360;
+        
+        while (Math.abs(angleDiff) > 5) { // 5 degree tolerance
+            double turnPower = Math.signum(angleDiff) * power * Constants.TURN_GAIN;
+            driveArcade(turnPower, 0);
+            currentAngle = navX.getYaw();
+            angleDiff = targetAngle - currentAngle;
+            while (angleDiff > 180) angleDiff -= 360;
+            while (angleDiff < -180) angleDiff += 360;
+        }
+        
+        driveArcade(0, 0);
+    }
+
 
     @Override
     public void periodic() {
