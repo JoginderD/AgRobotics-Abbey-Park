@@ -71,7 +71,7 @@ public class DriveTrain extends SubsystemBase {
         return value;
     }
 
-    // simple driving, y moves forward backwards, x turns left right
+    // drive da robot!
     public void driveArcade(double x, double y) {
         x = clamp(x, -1.0, 1.0);
         y = clamp(y, -1.0, 1.0);
