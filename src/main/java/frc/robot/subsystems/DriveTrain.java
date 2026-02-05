@@ -24,7 +24,7 @@ public class DriveTrain extends SubsystemBase {
     private TitanQuadEncoder rightBackEncoder;
     private TitanQuadEncoder rightFrontEncoder;
 
-    public DriveTrain() {
+    public DriveTrain() { 
         leftBack = new TitanQuad(Constants.TITAN_ID, Constants.LEFT_BACK);
         leftFront = new TitanQuad(Constants.TITAN_ID, Constants.LEFT_FRONT);
         rightBack = new TitanQuad(Constants.TITAN_ID, Constants.RIGHT_BACK);
@@ -125,26 +125,6 @@ public class DriveTrain extends SubsystemBase {
                 
                 lastUpdate = System.currentTimeMillis();
             }
-        }
-        
-        driveArcade(0, 0);
-    }
-
-
-    // rotates robot to target angle
-    public void turnToAngle(double targetAngle, double power) {
-        double currentAngle = navX.getYaw();
-        double angleDiff = targetAngle - currentAngle;
-        while (angleDiff > 180) angleDiff -= 360;
-        while (angleDiff < -180) angleDiff += 360;
-        
-        while (Math.abs(angleDiff) > 5) { // 5 degree tolerance
-            double turnPower = Math.signum(angleDiff) * power * Constants.TURN_GAIN;
-            driveArcade(turnPower, 0);
-            currentAngle = navX.getYaw();
-            angleDiff = targetAngle - currentAngle;
-            while (angleDiff > 180) angleDiff -= 360;
-            while (angleDiff < -180) angleDiff += 360;
         }
         
         driveArcade(0, 0);

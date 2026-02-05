@@ -34,9 +34,7 @@ public class UWB extends SubsystemBase {
             System.err.println("Uh oh: " + e.getMessage());
         }
 
-        xPosition = 0.0;
-        yPosition = 0.0;
-        zPosition = 0.0;
+        resetPosition();
     }
 
     public void resetPosition() {
@@ -52,7 +50,7 @@ public class UWB extends SubsystemBase {
         }
 
         // please just work first try
-        try {
+        try {   
             String data = serialPort.readString();
             if (data != null && !data.isEmpty()) {
                 // ok so this might not work based on how the data is formatted, but im expecting it to look like "X:123.45,Y:67.89,Z:10.11" 

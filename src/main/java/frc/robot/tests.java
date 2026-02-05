@@ -68,18 +68,12 @@ public class tests {
 
     // test all autonomous movement functions
     public void testAutonomousMovement() {
-        System.out.println("autonomous movement tests!");
+        System.out.println("auto moving tests!");
         
-        System.out.println("move forward starting");
+        System.out.println("Move forward: starting...");
         driveTrain.moveForward(100, 0.3);
-        System.out.print("move forward: ");
+        System.out.print("Move forward: ");
         result(true);
-        
-        System.out.println("turn to angle starting");
-        driveTrain.turnToAngle(90, 0.3);
-        float finalYaw = driveTrain.navX.getYaw();
-        System.out.print("turn to angle: ");
-        result(Math.abs(finalYaw - 90) < 10);
     }
 
     // test all uwb functions

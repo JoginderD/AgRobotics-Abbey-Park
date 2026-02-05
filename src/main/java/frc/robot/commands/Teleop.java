@@ -66,11 +66,6 @@ public class Teleop extends CommandBase {
             rightPower = clamp(rightPower, -Constants.MAX_POWER, Constants.MAX_POWER);
 
             driveTrain.driveDifferential(leftPower, rightPower);
-
-            SmartDashboard.putNumber("Forward", forward);
-            SmartDashboard.putNumber("Turn", turn);
-            SmartDashboard.putNumber("Left", leftPower);
-            SmartDashboard.putNumber("Right", rightPower);
         }
         
         SmartDashboard.putBoolean("UWB Driving", uwbDriving);
@@ -80,15 +75,7 @@ public class Teleop extends CommandBase {
         if (value < min) return min;
         if (value > max) return max;
         return value;
+    
     }
 
-    @Override
-    public void end(boolean interrupted) {
-        driveTrain.driveDifferential(0.0, 0.0);
-    }
-
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
 }
