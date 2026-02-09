@@ -11,22 +11,21 @@ def ROBOT_MAIN_CLASS = "frc.robot.Main"
 // Define my targets (VMX Pi) and artifacts (deployable files)
 deploy {
     targets {
-        target("vmxpi", edu.wpi.first.gradlerio.deploy.roborio.RoboRIO) {
+        roboRIO("roborio") {
             team = frc.getTeamNumber()
             addresses = ["172.22.11.2", "10.0.0.2", "vmxpi.local"]
             directory = '/home/pi'
             user = 'pi'
             password = 'raspberry'
-            timeout = 30
         }
     }
     artifacts {
         frcJavaArtifact('frcJava') {
-            targets << "vmxpi"
+            targets << "roborio"
             jvmArgs = ['-Djava.library.path=/usr/local/frc/third-party/lib']
         }
         fileTreeArtifact('frcStaticFileDeploy') {
-            targets << "vmxpi"
+            targets << "roborio"
             files = fileTree(dir: 'src/main/deploy')
             directory = '/home/pi/deploy'
         }
