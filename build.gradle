@@ -1,6 +1,7 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2020.3.2"
+    id "com.github.johnrengelman.shadow" version "5.2.0"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -8,21 +9,30 @@ targetCompatibility = JavaVersion.VERSION_11
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
 
-// Define my targets (VMX Pi) and artifacts (deployable files)
+// VMX Pi Deployment Configuration
 deploy {
     targets {
-        roboRIO("roborio") {
-            team = frc.getTeamNumber()
+        target("vmxpi", jaci.gradle.deploy.target.RemoteTarget) {
+            directory = '/home/pi/deploy'
+            maxChannels = 1
+            locations {
+                ssh(jaci.gradle.deploy.target.location.SshDeployLocation) {
+                    address = "172.22.11.2"
+                    user = 'pi'
+                    password = ''
+                    ipv6 = false
+                }
+            }
         }
     }
     artifacts {
         frcJavaArtifact('frcJava') {
-            targets << "roborio"
+            targets << "vmxpi"
         }
         fileTreeArtifact('frcStaticFileDeploy') {
-            targets << "roborio"
+            targets << "vmxpi"
             files = fileTree(dir: 'src/main/deploy')
-            directory = '/home/lvuser/deploy'
+            directory = '/home/pi/deploy'
         }
     }
 }
