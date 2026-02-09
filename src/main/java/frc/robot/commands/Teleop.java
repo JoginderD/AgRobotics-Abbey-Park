@@ -17,7 +17,7 @@ public class Teleop extends CommandBase {
     @Override
     public void initialize() {
         // Reset gyro when teleop starts
-        driveTrain.navX.zeroYaw();
+        driveTrain.resetGyro();
     }
 
     @Override

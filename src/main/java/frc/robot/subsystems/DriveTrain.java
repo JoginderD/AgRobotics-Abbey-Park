@@ -47,6 +47,11 @@ public class DriveTrain extends SubsystemBase {
         rightFront.set(y - x);
     }
 
+    // Reset the gyro heading to zero
+    public void resetGyro() {
+        navX.zeroYaw();
+    }
+
     @Override
     public void periodic() {
         // This method will be called once per scheduler run

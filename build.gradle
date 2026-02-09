@@ -19,7 +19,7 @@ deploy {
         frcJavaArtifact('frcJava') {
             targets << "roborio"
         }
-        frcStaticFileDeploy('frcStaticFileDeploy') {
+        fileTreeArtifact('frcStaticFileDeploy') {
             targets << "roborio"
             files = fileTree(dir: 'src/main/deploy')
             directory = '/home/lvuser/deploy'
