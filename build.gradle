@@ -13,21 +13,16 @@ deploy {
     targets {
         roboRIO("roborio") {
             team = frc.getTeamNumber()
-            addresses = ["172.22.11.2", "10.0.0.2", "vmxpi.local"]
-            directory = '/home/pi'
-            user = 'pi'
-            password = 'raspberry'
         }
     }
     artifacts {
         frcJavaArtifact('frcJava') {
             targets << "roborio"
-            jvmArgs = ['-Djava.library.path=/usr/local/frc/third-party/lib']
         }
         fileTreeArtifact('frcStaticFileDeploy') {
             targets << "roborio"
             files = fileTree(dir: 'src/main/deploy')
-            directory = '/home/pi/deploy'
+            directory = '/home/lvuser/deploy'
         }
     }
 }
