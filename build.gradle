@@ -2,6 +2,7 @@ plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2020.3.2"
     id "com.github.johnrengelman.shadow" version "5.2.0"
+    id "jaci.gradle.EmbeddedTools" version "2020.12.23"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -9,19 +10,18 @@ targetCompatibility = JavaVersion.VERSION_11
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
 
-// VMX Pi Deployment Configuration
 deploy {
     targets {
         target("vmxpi", jaci.gradle.deploy.target.RemoteTarget) {
             directory = '/home/pi/deploy'
             maxChannels = 1
             locations {
-                ssh(jaci.gradle.deploy.target.location.SshDeployLocation) {
-                    address = "172.22.11.2"
-                    user = 'pi'
-                    password = ''
-                    ipv6 = false
-                }
+                // ssh(jaci.gradle.deploy.target.location.SshDeployLocation) {
+                //     address = "10.12.34.2"
+                //     user = 'pi'
+                //     password = 'raspberry'
+                //     ipv6 = false
+                // }
             }
         }
     }
@@ -37,7 +37,6 @@ deploy {
     }
 }
 
-// Defining my dependencies
 dependencies {
     implementation wpi.deps.wpilib()
     nativeZip wpi.deps.wpilibJni(wpi.platforms.roborio)
@@ -52,7 +51,6 @@ dependencies {
     simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
 }
 
-// Setting up my Jar File
 jar {
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
